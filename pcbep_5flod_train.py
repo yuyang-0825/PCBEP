@@ -308,7 +308,6 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 dataset = load_data('../Data/data_feature_surface.txt')
 # train, val, test = dataset[: 576], dataset[576: 721], dataset[721: 843]
 test = dataset[721: 843]
-# dataset = torch.load('zy_checkpoint_ppf.pt')
 print(len(dataset))
 testloader = DataLoader(test, batch_size=1)
 
