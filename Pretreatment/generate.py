@@ -9,7 +9,7 @@ ff = open('../Data/test_data_feature_surface.txt', 'w')
 
 label_file = '../Data/label.txt'
 # feature_file = 'AAindex.txt'
-surface_file = '../Data/new_surface.txt'
+surface_file = '../Data/surface.txt'
 # fasta_feature = 'unbound/fasta.txt'
 data_num = 0
 with open(label_file, 'r') as num_fp:
