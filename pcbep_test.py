@@ -16,11 +16,13 @@ import sys
 import math
 import scipy.spatial
 from torch_scatter import scatter_add
+from optparse import OptionParser
 
 Center = T.Center()
 Normalscale = T.NormalizeScale()
 Delaunay = T.Delaunay()
 Normal = T.GenerateMeshNormals()
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
 def normalize_point_pos(pos):
@@ -231,59 +233,72 @@ class FocalLoss(nn.Module):
         return F_loss.mean()
 
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-dataset = load_data('../Data/data_feature_surface.txt')
-print(len(dataset))
-testloader = DataLoader(dataset, batch_size=1)
+def start(options):
+    # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    dataset = load_data(options.dataset)
+    print(len(dataset))
+    testloader = DataLoader(dataset, batch_size=1)
 
 
-checkpoint = 'checkpoint.pt'
+    checkpoint = options.checkpoint
 
-pred_total = []
-aa_total = []
-out_total = []
+    pred_total = []
+    aa_total = []
+    out_total = []
 
-model = Net().to(device)
-model.load_state_dict(torch.load(checkpoint))
-model.eval()
-with torch.no_grad():
-    for data in testloader:
-        data = data.to(device)
-        out = model(data)
-        out = F.sigmoid(out)
-        out_total.extend(out.cpu().tolist())
-        pred = out.ge(0.65).float()
-        pred_total.extend(pred.detach().cpu().numpy())
-        aa_total.extend(data.label.detach().cpu().numpy())
+    model = Net().to(device)
+    model.load_state_dict(torch.load(checkpoint))
+    model.eval()
+    with torch.no_grad():
+        for data in testloader:
+            data = data.to(device)
+            out = model(data)
+            out = F.sigmoid(out)
+            out_total.extend(out.cpu().tolist())
+            pred = out.ge(0.65).float()
+            pred_total.extend(pred.detach().cpu().numpy())
+            aa_total.extend(data.label.detach().cpu().numpy())
 
-pred_total = torch.tensor(pred_total)
-out_total = torch.tensor(out_total)
-pred_total = pred_total.squeeze()
-out_total = out_total.squeeze()
+    pred_total = torch.tensor(pred_total)
+    out_total = torch.tensor(out_total)
+    pred_total = pred_total.squeeze()
+    out_total = out_total.squeeze()
 
-aa_total = torch.tensor(aa_total)
+    aa_total = torch.tensor(aa_total)
 
-correct = int(pred_total.eq(aa_total).sum().item())
-tn, fp, fn, tp = confusion_matrix(aa_total, pred_total).ravel()
-print('tn' + str(tn) + 'tp' + str(tp) + 'fn' + str(fn) + 'fp' + str(fp))
-recall = tp / (tp + fn)
-print('recall:' + str(recall))
-sp = tn / (fp + tn)
-print('sp:' + str(sp))
-precision = tp / (tp + fp)
-print('precision:' + str(precision))
-mcc = float(tp * tn - fp * fn) / (math.sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn)) + sys.float_info.epsilon)
-print('mcc:' + str(mcc))
-auc = metrics.roc_auc_score(aa_total, out_total)
-print('AUC:' + str(auc))
-ap = metrics.average_precision_score(aa_total, out_total)
-print('AP:' + str(ap))
-# out_total1 = np.rint(out_total)
-f1 = metrics.f1_score(aa_total, pred_total)
-print('f1:' + str(f1))
+    correct = int(pred_total.eq(aa_total).sum().item())
+    tn, fp, fn, tp = confusion_matrix(aa_total, pred_total).ravel()
+    print('tn' + str(tn) + 'tp' + str(tp) + 'fn' + str(fn) + 'fp' + str(fp))
+    recall = tp / (tp + fn)
+    print('recall:' + str(recall))
+    sp = tn / (fp + tn)
+    print('sp:' + str(sp))
+    precision = tp / (tp + fp)
+    print('precision:' + str(precision))
+    mcc = float(tp * tn - fp * fn) / (math.sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn)) + sys.float_info.epsilon)
+    print('mcc:' + str(mcc))
+    auc = metrics.roc_auc_score(aa_total, out_total)
+    print('AUC:' + str(auc))
+    ap = metrics.average_precision_score(aa_total, out_total)
+    print('AP:' + str(ap))
+    # out_total1 = np.rint(out_total)
+    f1 = metrics.f1_score(aa_total, pred_total)
+    print('f1:' + str(f1))
 
-out_total = out_total.tolist()
-aa_total = aa_total.tolist()
-with open('result/result_pcbep.txt', 'w') as f:
-    for i in range(len(out_total)):
-        f.write(str(aa_total[i]) + '\t' + str(out_total[i]) + '\n')
+    out_total = out_total.tolist()
+    aa_total = aa_total.tolist()
+    with open(options.output, 'w') as f:
+        for i in range(len(out_total)):
+            f.write(str(aa_total[i]) + '\t' + str(out_total[i]) + '\n')
+
+
+if __name__ == '__main__':
+    parser = OptionParser()
+    parser.add_option("-i", "--input", type="string", dest="dataset", default='Data/data_feature_surface.txt',
+                      help="Data file path entered.")
+    parser.add_option("-c", "--checkpoint", type="string", dest="checkpoint", default='checkpoint.pt',
+                      help="Checkpoint file path entered.")
+    parser.add_option("-o", "--output", type="string", dest="output", default="result/result_pcbep.txt",
+                      help="Output the results to a file.")
+    (options, args) = parser.parse_args()
+    start(options)
