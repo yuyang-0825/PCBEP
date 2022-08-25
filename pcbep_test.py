@@ -10,7 +10,6 @@ import torch_geometric.transforms as T
 from sklearn.metrics import confusion_matrix, precision_score, recall_score
 from torch_geometric.nn import DynamicEdgeConv, global_max_pool, PointConv, radius, global_mean_pool
 from sklearn import metrics
-from PPFConv import PPFConv
 from PointTransformerConv import PointTransformerConv
 import sys
 import math
