@@ -50,16 +50,7 @@ Use 0 1 to encode surface labels and organize them into fasta format, for exampl
 01111111111111111111101110011011110011101110111111111011111110010111111111100000101111101111111111101000010111111111011111111111110110111111101110111111111
 ```
 
-### 3. Get the all pdb file after extracting the single chain.  
- Named "6WIR-C.pdb" in "Data/data". For example
-```
-ATOM   3334  N   SER C  41      68.159  -1.843 -11.815  1.00122.88           N  
-ATOM   3335  CA  SER C  41      67.329  -3.021 -12.051  1.00122.82           C  
-ATOM   3336  C   SER C  41      65.929  -2.841 -11.479  1.00127.97           C  
-```
-
-### 4. Get the all PSSM matrices file after extracting the single chain.  
- Named "6wir-C.pssm" in "Data/PSSM". For example
+### 3. Obtain the PSSM matrices of the antigens to be tested.  
 ```
 Last position-specific scoring matrix computed, weighted observed percentages rounded down, information per position, and relative weight of gapless real matches to pseudocounts
             A   R   N   D   C   Q   E   G   H   I   L   K   M   F   P   S   T   W   Y   V   A   R   N   D   C   Q   E   G   H   I   L   K   M   F   P   S   T   W   Y   V
@@ -68,7 +59,7 @@ Last position-specific scoring matrix computed, weighted observed percentages ro
     3 Y    -1  -2  -2  -3  -2  -2  -2  -3   0   0   0  -2   0   3  -3  -1   2   0   5   1    0   0   0   0   0   0   0   0   0   0   0   0   0  16   0   0  22   0  39  23  0.36 0.03  
 ```
 
-### 5. Get the feature file for your own data
+### 4. Get the feature file for your own data
 ```
 python Pretreatment/generate.py -l ../Data/label.txt -s ../Data/surface.txt -p ../Data/data -m ../Data/PSSM -o ../Data/data_feature_surface.txt
 ```
@@ -78,7 +69,7 @@ python Pretreatment/generate.py -l ../Data/label.txt -s ../Data/surface.txt -p .
 - `-m`or`--pssm` fold path for PSSM files of antigens. [default:'../Data/PSSM']
 - `-o`or`--output` output file path. [default:'../Data/data_feature_surface.txt']
 
-### 6. Get test result
+### 5. Get test result
 ```
 python pcbep_test.py -i Data/data_feature_surface.txt -c checkpoint.pt -o result/result_pcbep.txt
 ```
