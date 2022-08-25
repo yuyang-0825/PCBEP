@@ -129,6 +129,8 @@ yapf==0.32.0
 zipp==3.8.0
 ```
 ## Tests
+ First decompression 'Data/data_feature_surface.7z'
+
 If you want to test the results of our data.
 ```shell
 python pcbep_test.py
