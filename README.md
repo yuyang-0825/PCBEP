@@ -129,21 +129,6 @@ yapf==0.32.0
 zipp==3.8.0
 ```
 ## Tests
-Redhat、Fedora、Centos:
-```shell
-yum install p7zip
-cd Data
-7z x data_feature_surface.7z
-cd ..
-```
-Debian、Ubuntu:
-```shell
-apt-get install p7zip
-cd Data
-7z x data_feature_surface.7z
-cd ..
-```
-
 If you want to test the results of our data.
 ```shell
 python pcbep_test.py
@@ -199,8 +184,32 @@ Last position-specific scoring matrix computed, weighted observed percentages ro
 ```
 python Pretreatment/generate.py
 ```
+- `-l`or`--label`to set the label file path. 
+  - default:'../Data/label.txt'
+- `-s`or`--surface`to set the surface file path. 
+  - default:'../Data/surface.txt'
+- `-p`or`--pdb`to set the pdb folder path. 
+  - default:'../Data/data'
+- `-m`or`--pssm`to set the pssm folder path. 
+  - default:'../Data/PSSM'
+- `-o`or`--output`to set the output file path. 
+  - default:'../Data/data_feature_surface.txt'
+- e.g.
+```
+python Pretreatment/generate.py -l ../Data/label.txt -p ../Data/data -o ../Data/data_feature_surface.txt
+```
 
 ### 6. Get the result
 ```
 python pcbep_test.py
+```
+- `-i`or`--input`to set the imput file path. 
+  - default:'Data/data_feature_surface.txt'
+- `-c`or`--checkpoint`to set the checkpoint file path. 
+  - default:'checkpoint.pt'
+- `-o`or`--ouptup`to set the output file path. 
+  - default:'result/result_pcbep.txt'
+- e.g.
+```
+python pcbep_test.py -i Data/data_feature_surface.txt
 ```
