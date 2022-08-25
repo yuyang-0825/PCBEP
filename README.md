@@ -73,22 +73,16 @@ Last position-specific scoring matrix computed, weighted observed percentages ro
 python Pretreatment/generate.py -l ../Data/label.txt -s ../Data/surface.txt -p ../Data/data -m ../Data/PSSM -o ../Data/data_feature_surface.txt
 ```
 - `-l`or`--label` file path for epitope label.  [default:'../Data/label.txt']
-- `-s`or`--surface`file path for surface label. [default:'../Data/surface.txt']
+- `-s`or`--surface` file path for surface label. [default:'../Data/surface.txt']
 - `-p`or`--pdb` fold path for pdb files to be tested.  [default:'../Data/data']
-- `-m`or`--pssm`fold path for PSSM files of antigens. [default:'../Data/PSSM']
-- `-o`or`--output`output file path. [default:'../Data/data_feature_surface.txt']
+- `-m`or`--pssm` fold path for PSSM files of antigens. [default:'../Data/PSSM']
+- `-o`or`--output` output file path. [default:'../Data/data_feature_surface.txt']
 
-### 6. Get the result
+### 6. Get test result
 ```
-python pcbep_test.py
+python pcbep_test.py -i Data/data_feature_surface.txt -c checkpoint.pt -o result/result_pcbep.txt
 ```
-- `-i`or`--input`to set the imput file path. 
-  - default:'Data/data_feature_surface.txt'
-- `-c`or`--checkpoint`to set the checkpoint file path. 
-  - default:'checkpoint.pt'
-- `-o`or`--ouptup`to set the output file path. 
-  - default:'result/result_pcbep.txt'
-- e.g.
-```
-python pcbep_test.py -i Data/data_feature_surface.txt
-```
+- `-i`or`--input` file path for fature path. [default:'Data/data_feature_surface.txt']
+- `-c`or`--checkpoint` file path for pre-trained model.. [default:'checkpoint.pt']
+- `-o`or`--ouptup` output file path. [default:'result/result_pcbep.txt']
+
